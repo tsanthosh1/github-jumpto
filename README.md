@@ -19,9 +19,9 @@ A Chrome extension that helps you quickly navigate to GitHub repositories, PRs, 
 
 ## Usage
 
-1. Press Command+Shift+B (Mac) to open the extension popup
+1. Press Command+Shift+K (Mac) to open the extension popup
 2. Start typing to search through your visited repositories
-3. Use arrow keys to navigate through suggestions
+3. Use arrow keys or tab to navigate through suggestions
 4. Press Enter or click on a suggestion to open the repository in a new tab
 
 ## How it works
