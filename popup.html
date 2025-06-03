@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Github JumpTo</title>
+    <style>
+        body {
+            width: 300px;
+            padding: 10px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+        }
+
+        .extension-info {
+            display: flex;
+            align-items: center;
+            padding-top: 10px;
+            color: #24292f;
+            border-top: 1px solid #eaecef;
+            margin-top: 10px;
+        }
+
+        .extension-info img {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+        }
+
+        .extension-info-text {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        #search-input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        #suggestions {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+
+        .suggestion {
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .suggestion:hover {
+            background-color: #f6f8fa;
+        }
+
+        .suggestion.selected {
+            background-color: #0969da;
+        }
+
+        .suggestion.selected,
+        .suggestion.recent.selected {
+            color: white !important;
+        }
+
+        .suggestion.selected .rhs {
+            color: white;
+        }
+
+        .search-term-input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 4px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 12px;
+        }
+
+        .search-term-input:focus {
+            outline: none;
+            border-color: #0969da;
+        }
+
+        .footer {
+            border-top: 1px solid #eaecef;
+            padding-top: 10px;
+            font-size: 12px;
+            color: #57606a;
+        }
+
+        .footer a {
+            color: #0969da;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .suggestion.recent {
+            font-size: 12px;
+            color: #57606a;
+        }
+
+        #recent-container {
+            margin-bottom: 12px;
+            padding-bottom: 4px;
+            display: none;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            font-size: 12px;
+            color: #57606a;
+            font-weight: 500;
+        }
+
+        .clear-button {
+            background: none;
+            border: none;
+            color: #57606a;
+            font-size: 12px;
+            cursor: pointer;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .clear-button:hover {
+            color: #0969da;
+            background-color: #f6f8fa;
+        }
+
+        .rhs {
+            color: gray;
+        }
+
+        .rhs:active {
+            color: white;
+        }
+
+        .recent-item {
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 12px;
+            /* Match suggestion font size */
+            color: #24292f;
+            background-color: white;
+        }
+
+        .recent-item:hover {
+            background-color: #f6f8fa;
+        }
+
+        .recent-item.selected {
+            background-color: #0969da;
+            color: white;
+        }
+
+        .recent-item:focus {
+            outline: none;
+            background-color: #0969da;
+            color: white;
+        }
+
+        .recent-item:active {
+            background-color: #024ea2;
+            color: white;
+        }
+
+        .link-button {
+            background: none;
+            border: none;
+            padding: 0;
+            font: inherit;
+            color: #0969da;
+            cursor: pointer;
+        }
+
+        .link-button:hover {
+            text-decoration: underline;
+        }
+
+        .link-button:focus {
+            text-decoration: underline;
+            text-decoration: none;
+            color: #0555a1;
+        }
+    </style>
+</head>
+
+<body>
+    <input type="text" id="search-input" placeholder="Quick search repositories, PRs, issues...">
+    <div id="recent-container">
+        <div class="section-header">
+            <span>Recent</span>
+            <button id="clear-recent" class="clear-button">Clear</button>
+        </div>
+        <div id="recent"><!-- Recent items will appear here --></div>
+    </div>
+    <div id="suggestions"><!-- Search results will appear here --></div>
+    <div class="footer" style="display: flex; flex-direction: column; gap: 6px;">
+        <a href="#" id="settings-link" style="display: flex; align-items: center; gap: 6px">
+            <!-- <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-settings2-icon lucide-settings-2">
+                <path d="M20 7h-9" />
+                <path d="M14 17H5" />
+                <circle cx="17" cy="17" r="3" />
+                <circle cx="7" cy="7" r="3" />
+            </svg> -->
+            Limit results by User or Organisation
+        </a>
+
+        <button id="open-shortcuts" class="link-button" style="display: flex; align-items: center; gap: 6px;">
+            <!-- <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-keyboard-icon lucide-keyboard">
+                <path d="M10 8h.01" />
+                <path d="M12 12h.01" />
+                <path d="M14 8h.01" />
+                <path d="M16 12h.01" />
+                <path d="M18 8h.01" />
+                <path d="M6 8h.01" />
+                <path d="M7 16h10" />
+                <path d="M8 12h.01" />
+                <rect width="20" height="16" x="2" y="4" rx="2" />
+            </svg> -->
+
+            <span>Customize Shortcut</span>
+        </button>
+
+
+    </div>
+    <div class="extension-info">
+        <img src="icons/icon32.png" alt="GitHub JumpTo icon">
+        <span class="extension-info-text">GitHub JumpTo</span>
+    </div>
+    <script src="popup.js"></script>
+</body>
+
+</html>

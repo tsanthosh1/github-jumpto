@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Filter Repositories - Github JumpTo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .header {
+            /* background: linear-gradient(135deg, #bcb9f2 0%, #7c3aed 100%); */
+            color: black;
+            padding: 32px;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M 8 0 L 0 0 0 8" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+            text-align: left;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .icon-placeholder {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .icon-placeholder svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        h1 {
+            font-size: 2.2em;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .subtitle {
+            opacity: 0.9;
+            font-size: 1.1em;
+            margin-top: 8px;
+        }
+
+        .content {
+            padding: 0;
+        }
+
+        .settings-panel {
+            padding: 32px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .panel-title {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-icon {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .panel-icon svg {
+            width: 12px;
+            height: 12px;
+            fill: white;
+        }
+
+        .panel-description {
+            color: #64748b;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.95em;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            margin-top: 8px;
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            font-size: 14px;
+            background: #fafbfc;
+            transition: all 0.3s ease;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            background: white;
+        }
+
+        textarea::placeholder {
+            color: #9ca3af;
+        }
+
+        .help-text {
+            color: #6b7280;
+            font-size: 0.9em;
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+
+        .action-section {
+            padding: 24px 32px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .action-section:last-child {
+            border-bottom: none;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #374151;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-icon {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .section-icon svg {
+            width: 10px;
+            height: 10px;
+            fill: white;
+        }
+
+        button {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-right: 12px;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+        }
+
+        button[style*="cf222e"] {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        }
+
+        button[style*="cf222e"]:hover {
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+        }
+
+        button[style*="0969DA"] {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        }
+
+        button[style*="0969DA"]:hover {
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .status-container {
+            margin-top: 12px;
+        }
+
+        #save-status,
+        #reset-status,
+        #history-status {
+            margin-top: 12px;
+        }
+
+        .success {
+            background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+            color: #166534;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid #86efac;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        pre {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 20px;
+            border-radius: 12px;
+            white-space: pre-wrap;
+            word-break: break-word;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+            margin-top: 16px;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            border: 1px solid #374151;
+        }
+
+        pre.visible {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Custom scrollbar for pre elements */
+        pre::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        pre::-webkit-scrollbar-track {
+            background: #374151;
+            border-radius: 3px;
+        }
+
+        pre::-webkit-scrollbar-thumb {
+            background: #6b7280;
+            border-radius: 3px;
+        }
+
+        pre::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .settings-panel,
+            .action-section {
+                padding: 24px 20px;
+            }
+
+            .header {
+                padding: 24px 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .button-group {
+                display: flex;
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+                justify-content: center;
+                margin-right: 0;
+            }
+        }
+
+        .accordion {
+            width: 100%;
+        }
+
+        .accordion-header {
+            cursor: pointer;
+            padding: 16px 32px;
+            background: #dedfe0;
+            border-top: 1px solid #e2e8f0;
+            transition: background 0.3s ease;
+        }
+
+        .accordion-header:hover {
+            background: #e5e7eb;
+        }
+
+        .accordion-content {
+            display: none;
+            padding: 20px 32px 24px 32px;
+        }
+
+        .accordion-content.visible {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="icon-placeholder">
+                        <img src="icons/icon128.png" alt="GitHub JumpTo Icon"
+                            style="width: 34px; height: 34px; border-radius: 50%;" />
+                    </div>
+                    <h1 style="text-align: left; width: 100%;">GitHub JumpTo</h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Main Settings Panel -->
+            <div class="settings-panel">
+                <div class="panel-title">
+                    <div class="panel-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M3 6a1 1 0 011-1h16a1 1 0 110 2H4a1 1 0 01-1-1zM3 12a1 1 0 011-1h16a1 1 0 110 2H4a1 1 0 01-1-1zM4 17a1 1 0 100 2h8a1 1 0 100-2H4z" />
+                        </svg>
+                    </div>
+                    Repository Filtering
+                </div>
+                <div class="panel-description">
+                    Control which repositories appear in your suggestions by filtering specific users or organizations.
+                </div>
+
+                <div class="form-group">
+                    <label for="allowedUsers">Show repositories only from these users/organizations:</label>
+                    <textarea id="allowedUsers" placeholder="Enter usernames/organizations, one per line"></textarea>
+                    <div class="help-text">
+                        Only repositories from these users/organizations will be included in suggestions.
+                        Leave empty to include all repositories.
+                    </div>
+                </div>
+
+                <button id="save">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z" />
+                    </svg>
+                    Save Settings
+                </button>
+                <div id="save-status"></div>
+            </div>
+
+            <!-- Data Management Section -->
+            <div class="action-section">
+                <div class="section-header">
+                    <div class="section-title">
+                        <div class="section-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                            </svg>
+                        </div>
+                        Data Management
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button id="reset" style="background-color: #cf222e;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z" />
+                        </svg>
+                        Reset and Rescan History
+                    </button>
+                </div>
+                <div class="help-text">
+                    This will clear all stored repositories and perform a fresh scan of your browser history.
+                </div>
+                <div id="reset-status"></div>
+            </div>
+
+            <!-- Repository Data Section -->
+            <div class="action-section">
+
+                <div class="accordion">
+                    <div class="accordion-header" id="dataAccordionHeader">
+                        <div class="section-title">
+                            <span>Collected Repositories</span>
+                            <svg class="accordion-icon" width="30px" viewBox="0 0 24 24">
+                                    <path d="M7 10l5 5 5-5H7z" />
+                                </svg>
+                        </div>
+
+                    </div>
+                    <pre id="dataOutput" class="accordion-content"></pre>
+                </div>
+
+            </div>
+
+            <!-- Recent Activity Section -->
+            <div class="action-section">
+
+                <div class="button-group">
+                    <div class="accordion">
+                        <div class="accordion-header" id="recentAccordionHeader">
+                            <div class="section-title">
+                                <span>Recent Selections</span>
+                                <svg class="accordion-icon" width="30px" viewBox="0 0 24 24">
+                                    <path d="M7 10l5 5 5-5H7z" />
+                                </svg>
+                            </div>
+
+                        </div>
+                        <pre id="recentOutput" class="accordion-content"></pre>
+                    </div>
+                </div>
+
+                <div id="clearRecent"
+                    style="cursor: pointer; color: #cf222e; margin-top: 20px; display: flex; align-items: center; gap: 4px; justify-content: end;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+                    </svg>
+                    Clear Recent History
+                    </button>
+                    <div id="history-status"></div>
+                </div>
+            </div>
+        </div>
+
+        <script src="options.js"></script>
+</body>
+
+</html>
