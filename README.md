@@ -4,7 +4,7 @@ A Chrome extension that helps you quickly navigate to GitHub repositories, PRs, 
 
 ## Features
 
-- Quick access to GitHub repositories using Command+Shift+B (Mac)
+- Quick access to GitHub repositories using Command+Shift+K (Mac)
 - Suggests repositories based on your browsing history
 - Fast repository search with keyboard navigation
 - Opens repositories in a new tab
