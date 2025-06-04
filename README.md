@@ -2,6 +2,12 @@
 
 A Chrome extension that helps you quickly navigate to GitHub repositories, PRs, and issues from your browsing history.
 
+![Screenshot 1](images/1.jpg)
+
+![Screenshot 2](images/2.jpg)
+
+![Screenshot 3](images/3.jpg)
+
 ## Features
 
 - Quick access to GitHub repositories using Command+Shift+K (Mac)
