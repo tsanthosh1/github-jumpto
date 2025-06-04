@@ -22,7 +22,7 @@ The extension requires the following permissions for basic functionality:
 - `history`: To access your GitHub browsing history
 - `storage`: To store repository information locally in your browser
 - `commands`: To enable keyboard shortcuts
-- `tabs`: To open repository links in new tabs
+- `tabs`: To keep track of new repositories visited and to open repository links in new tabs
 
 All data processing happens locally within your browser.
 
