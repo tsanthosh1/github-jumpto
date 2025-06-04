@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Github JumpTo",
   "version": "1.0",
-  "description": "Quick access to GitHub repositories from your browsing history. Search and navigate to repositories, pull requests, issues, and more with keyboard shortcuts.",
+  "description": "Quickly jump to any page in a Github repository with a easy search interface.",
   "author": "tsanthosh",
   "icons": {
     "16": "icons/icon16.png",
