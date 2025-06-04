@@ -53,7 +53,9 @@ function generateEntries(org, repos = []) {
         entries.push(
             { searchTerm: [fullRepo], url: `/${fullRepo}`, displayName: fullRepo },
             { searchTerm: [`${fullRepo}/pulls`, `${fullRepo}/pr`, `${fullRepo}/pull request`], url: `/${fullRepo}/pulls`, displayName: `${fullRepo} -> Pull Requests` },
+            { searchTerm: [`${fullRepo}/pulls/search`, `${fullRepo}/pr/search`, `${fullRepo}/pull request search`], url: `/${fullRepo}/pulls?q=%s`, displayName: `${fullRepo} -> PR Search`, searchPlaceholder: "Search PRs", displayTemplate: `${fullRepo} -> Search PRs for "%s"` },
             { searchTerm: [`${fullRepo}/issues`], url: `/${fullRepo}/issues`, displayName: `${fullRepo} -> Issues` },
+            { searchTerm: [`${fullRepo}/issues/search`], url: `/${fullRepo}/issues?q=%s`, displayName: `${fullRepo} -> Search Issues`, searchPlaceholder: "Search Issues", displayTemplate: `${fullRepo} -> Search Issues for "%s"` },
             { searchTerm: [`${fullRepo}/commits`], url: `/${fullRepo}/commits/%s`, searchPlaceholder: "Branch name", displayName: `${fullRepo} -> Commits by branch`, displayTemplate: `${fullRepo} -> Commits by branch "%s"` },
             { searchTerm: [`${fullRepo}/branches`], url: `/${fullRepo}/tree/%s`, searchPlaceholder: "Branch name", displayName: `${fullRepo} -> Branches`, displayTemplate: `${fullRepo} -> Branches "%s"` },
             { searchTerm: [`${fullRepo}/actions`], url: `/${fullRepo}/actions`, displayName: `${fullRepo} -> Actions` },
