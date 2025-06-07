@@ -1,7 +1,9 @@
 # Github JumpTo
 
-[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/laldmhneaefakmalbenipafpnienbacd?style=flat-square&label=Chrome%20Web%20Store)](https://chromewebstore.google.com/detail/github-jumpto/laldmhneaefakmalbenipafpnienbacd)
-[![Chrome Web Store Users](https://img.shields.io/chrome-web-store/users/laldmhneaefakmalbenipafpnienbacd?style=flat-square&label=Users)](https://chromewebstore.google.com/detail/github-jumpto/laldmhneaefakmalbenipafpnienbacd)
+<a href="https://chromewebstore.google.com/detail/github-jumpto/laldmhneaefakmalbenipafpnienbacd">
+    <img src="https://developer.chrome.com/static/docs/webstore/branding/image/HRs9MPufa1J1h5glNhut.png" alt="Available in the Chrome Web Store" width="200"/>
+</a>
+
 
 A Chrome extension that helps you quickly navigate to GitHub repositories, PRs, and issues from your browsing history.
 
