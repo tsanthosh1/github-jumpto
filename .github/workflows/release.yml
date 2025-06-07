@@ -1,13 +1,43 @@
-name: Create Release
+name: Release
 
 on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v1.0.0)'
+        required: true
+        type: string
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Use Node.js 20.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20.x
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run tests
+      run: npm test
+
+    - name: Validate manifest.json
+      run: npm run validate
+
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+    if: success()
     steps:
       - uses: actions/checkout@v3
 
@@ -18,7 +48,15 @@ jobs:
           -x ".git/*" \
           -x ".github/*" \
           -x "*.md" \
-          -x ".*"
+          -x ".*" \
+          -x "node_modules/*" \
+          -x "test/*" \
+          -x "tests/*" \
+          -x "coverage/*" \
+          -x "package-lock.json" \
+          -x "package.json" \
+          -x "npm-debug.log" \
+          -x "*.test.*"
 
       - name: Create Release
         id: create_release

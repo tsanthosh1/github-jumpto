@@ -380,3 +380,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
   return true; // Keep the message channel open for async responses
 });
+
+// Export functions for testing
+if (typeof global !== 'undefined' && global.jest) {
+  global.extractRepoBase = extractRepoBase;
+  global.extractOrgName = extractOrgName;
+  global.shouldIncludeRepo = shouldIncludeRepo;
+  global.capitalize = capitalize;
+  global.generateEntries = generateEntries;
+  global.saveRepositories = saveRepositories;
+  global.saveRecentSelections = saveRecentSelections;
+  global.filterRepositoriesForOmnibox = filterRepositoriesForOmnibox;
+  global.updateRepositories = updateRepositories;
+  global.handleTabUpdate = handleTabUpdate;
+}

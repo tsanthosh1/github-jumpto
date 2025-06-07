@@ -1,5 +1,8 @@
 # Github JumpTo
 
+[![CI](https://github.com/USERNAME/github-explore/actions/workflows/ci.yml/badge.svg)](https://github.com/USERNAME/github-explore/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/USERNAME/github-explore/branch/main/graph/badge.svg)](https://codecov.io/gh/USERNAME/github-explore)
+
 A Chrome extension that helps you quickly navigate to GitHub repositories, PRs, and issues from your browsing history.
 
 ![Screenshot 1](images/1.jpg)

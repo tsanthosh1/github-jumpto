@@ -1,0 +1,22 @@
+{
+  "name": "github-explore",
+  "version": "1.0.0",
+  "description": "A Chrome extension that helps you quickly navigate to GitHub repositories, PRs, and issues from your browsing history.",
+  "main": "babel.config.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "validate": "node -e \"JSON.parse(require('fs').readFileSync('manifest.json', 'utf8')); console.log('manifest.json is valid')\""
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/preset-env": "^7.27.2",
+    "babel-jest": "^30.0.0-beta.3",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^30.0.0-beta.3"
+  }
+}
