@@ -1,9 +1,13 @@
 // Load saved settings
 document.addEventListener('DOMContentLoaded', function () {
-    chrome.storage.local.get(['allowedUsers'], function (result) {
+    chrome.storage.local.get(['allowedUsers', 'githubUsername'], function (result) {
         const textarea = document.getElementById('allowedUsers');
         if (result.allowedUsers) {
             textarea.value = result.allowedUsers.join('\n');
+        }
+        const usernameInput = document.getElementById('githubUsername');
+        if (result.githubUsername) {
+            usernameInput.value = result.githubUsername;
         }
     });
 });
@@ -15,9 +19,12 @@ document.getElementById('save').addEventListener('click', function () {
         .split('\n')
         .map(line => line.trim())
         .filter(line => line.length > 0);
+    const usernameInput = document.getElementById('githubUsername');
+    const githubUsername = usernameInput.value.trim();
 
     chrome.storage.local.set({
-        allowedUsers: users
+         allowedUsers: users,
+        githubUsername: githubUsername
     }, function () {
         showStatus("save-status", 'Settings saved!', 'success');
         chrome.runtime.sendMessage({ action: 'refreshRepositories' });

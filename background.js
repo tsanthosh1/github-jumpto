@@ -45,7 +45,7 @@ function capitalize(name) {
   return name.charAt(0).toUpperCase() + name.slice(1);
 }
 
-function generateEntries(org, repos = []) {
+function generateEntries(org, repos = [], githubUsername) {
   const entries = [];
 
   // Org-level entries
@@ -136,7 +136,24 @@ function generateEntries(org, repos = []) {
         displayTemplate: `${fullRepo} -> Search for "%s"`,
       }
     );
+
+    if (githubUsername) {
+      entries.push(
+        {
+          searchTerm: [
+            `${fullRepo}/pulls/my`,
+            `${fullRepo}/pr/my`,
+            `${fullRepo}/my pull requests`,
+            `${fullRepo}/my PRs`,
+          ],
+          url: `/${fullRepo}/pulls/${githubUsername}`,
+          displayName: `${fullRepo} -> My PRs`,
+          displayTemplate: `${fullRepo} -> My PRs`,
+        },
+      );
+    }
   });
+
 
   return entries;
 }
@@ -146,8 +163,9 @@ function generateEntries(org, repos = []) {
 function updateRepositories(forceUpdate = false) {
   if (forceUpdate) chrome.storage.local.remove(["repositories"]);
 
-  chrome.storage.local.get(["allowedUsers"], (settings) => {
+  chrome.storage.local.get(["allowedUsers", "githubUsername"], (settings) => {
     const allowedUsers = settings.allowedUsers || [];
+    const githubUsername = settings.githubUsername;
     const orgs = new Set();
     const reposByOrg = {};
 
@@ -173,7 +191,7 @@ function updateRepositories(forceUpdate = false) {
         let entries = [];
         orgs.forEach((org) => {
           const repos = Array.from(reposByOrg[org] || []);
-          entries.push(...generateEntries(org, repos));
+          entries.push(...generateEntries(org, repos, githubUsername));
         });
 
         // Deduplicate by key (url + primary search term)
@@ -195,10 +213,11 @@ function updateRepositories(forceUpdate = false) {
 function handleTabUpdate(tabId, changeInfo) {
   if (!changeInfo.url) return;
 
-  chrome.storage.local.get(["repositories", "allowedUsers"], (result) => {
+  chrome.storage.local.get(["repositories", "allowedUsers", "githubUsername"], (result) => {
     const allowedUsers = result.allowedUsers || [];
     const org = extractOrgName(changeInfo.url);
     const repo = extractRepoBase(changeInfo.url);
+    const githubUsername = result.githubUsername;
     const reposByOrg = {};
 
     if (org && shouldIncludeRepo(org, allowedUsers)) {
@@ -215,7 +234,7 @@ function handleTabUpdate(tabId, changeInfo) {
     let newEntries = [];
     Object.keys(reposByOrg).forEach((orgName) => {
       const repos = Array.from(reposByOrg[orgName]);
-      newEntries.push(...generateEntries(orgName, repos));
+      newEntries.push(...generateEntries(orgName, repos, githubUsername));
     });
     const combined = [...storedRepos, ...newEntries];
 
